@@ -1,0 +1,20 @@
+Add your service images here:
+
+AC Services:
+- ac-installation.jpg
+- ac-repair.jpg  
+- ac-cleaning.jpg
+- ac-gas-refilling.jpg
+- ac-servicing.jpg
+
+Fridge Services:
+- fridge-repair.jpg
+- fridge-gas-refilling.jpg
+- fridge-cleaning.jpg
+
+Washing Machine Services:
+- washing-machine-repair.jpg
+- washing-machine-installation.jpg
+- washing-machine-cleaning.jpg
+
+Image size: 400x250px recommended

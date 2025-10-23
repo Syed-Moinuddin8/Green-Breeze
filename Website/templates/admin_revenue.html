@@ -1,0 +1,135 @@
+{% extends "admin_base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Revenue Management</h2>
+    <div class="text-end">
+        <h4 class="text-success mb-0">Total Revenue: ₹{{ "%.2f"|format(total_revenue) }}</h4>
+    </div>
+</div>
+
+<!-- Revenue Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Filter Type</label>
+                <select id="filterType" class="form-select" onchange="toggleFilterInput()">
+                    <option value="all" {{ 'selected' if filter_type == 'all' }}>All Time</option>
+                    <option value="day" {{ 'selected' if filter_type == 'day' }}>Specific Day</option>
+                    <option value="month" {{ 'selected' if filter_type == 'month' }}>Specific Month</option>
+                    <option value="year" {{ 'selected' if filter_type == 'year' }}>Specific Year</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Select Date/Period</label>
+                <input type="date" id="dayFilter" class="form-control" value="{{ filter_value if filter_type == 'day' else '' }}" style="{{ 'display: block;' if filter_type == 'day' else 'display: none;' }}">
+                <input type="month" id="monthFilter" class="form-control" value="{{ filter_value if filter_type == 'month' else '' }}" style="{{ 'display: block;' if filter_type == 'month' else 'display: none;' }}">
+                <select id="yearFilter" class="form-select" style="{{ 'display: block;' if filter_type == 'year' else 'display: none;' }}">
+                    <option value="">Select Year</option>
+                    {% for year in range(2020, 2030) %}
+                    <option value="{{ year }}" {{ 'selected' if filter_value == year|string }}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary" onclick="applyFilter()">
+                    <i class="fas fa-filter me-1"></i>Apply Filter
+                </button>
+                <button class="btn btn-outline-secondary" onclick="clearFilter()">
+                    <i class="fas fa-times me-1"></i>Clear
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Records -->
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">Revenue History</h5>
+    </div>
+    <div class="card-body">
+        {% if revenue_records %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in revenue_records %}
+                    <tr>
+                        <td><strong>#{{ record[0] }}</strong></td>
+                        <td>{{ record[1] }}</td>
+                        <td><span class="badge bg-info">{{ record[3] }}</span></td>
+                        <td><strong class="text-success">₹{{ "%.2f"|format(record[2]) }}</strong></td>
+                        <td>{{ record[4][:10] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-chart-line fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">No Revenue Records</h4>
+            <p class="text-muted">Revenue will appear here when bookings are marked as completed</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleFilterInput() {
+    const filterType = document.getElementById('filterType').value;
+    const dayFilter = document.getElementById('dayFilter');
+    const monthFilter = document.getElementById('monthFilter');
+    const yearFilter = document.getElementById('yearFilter');
+    
+    // Hide all inputs
+    dayFilter.style.display = 'none';
+    monthFilter.style.display = 'none';
+    yearFilter.style.display = 'none';
+    
+    // Show relevant input
+    if (filterType === 'day') {
+        dayFilter.style.display = 'block';
+    } else if (filterType === 'month') {
+        monthFilter.style.display = 'block';
+    } else if (filterType === 'year') {
+        yearFilter.style.display = 'block';
+    }
+}
+
+function applyFilter() {
+    const filterType = document.getElementById('filterType').value;
+    let filterValue = '';
+    
+    if (filterType === 'day') {
+        filterValue = document.getElementById('dayFilter').value;
+    } else if (filterType === 'month') {
+        filterValue = document.getElementById('monthFilter').value;
+    } else if (filterType === 'year') {
+        filterValue = document.getElementById('yearFilter').value;
+    }
+    
+    if (filterType === 'all') {
+        window.location.href = '{{ url_for("admin_revenue") }}';
+    } else if (filterValue) {
+        window.location.href = `{{ url_for("admin_revenue") }}?filter=${filterType}&value=${filterValue}`;
+    } else {
+        alert('Please select a date/period');
+    }
+}
+
+function clearFilter() {
+    window.location.href = '{{ url_for("admin_revenue") }}';
+}
+</script>
+{% endblock %}

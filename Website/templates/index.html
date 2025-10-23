@@ -1,0 +1,628 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if offers %}
+<!-- Rolling Offers Ticker -->
+<div class="offers-ticker">
+    <div class="ticker-content">
+        {% for offer in offers %}
+        <span class="ticker-item">
+            🔥 {{ offer[1] }} - {{ offer[3] }}% OFF | Valid until {{ offer[4] }} 🔥
+        </span>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Hero Section -->
+<section class="hero-section position-relative overflow-hidden">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6">
+                <div class="hero-content animate-fade-in-up">
+                    <span class="badge bg-light text-primary mb-3 px-3 py-2">🏆 #1 Home Appliance Service Provider</span>
+                    <h1 class="display-3 fw-bold mb-4 text-white">Keep Your Home <span class="text-gradient">Cool & Fresh</span></h1>
+                    <p class="lead mb-4 text-light">Professional AC, Fridge, and Washing Machine services with 24/7 support. Experience the difference with Green Breeze.</p>
+                    <div class="hero-stats mb-4">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h3 class="text-warning mb-0">500+</h3>
+                                    <small class="text-light">Happy Customers</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h3 class="text-warning mb-0">24/7</h3>
+                                    <small class="text-light">Support</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <h3 class="text-warning mb-0">5★</h3>
+                                    <small class="text-light">Rating</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="{{ url_for('book_service') }}" class="btn btn-warning btn-lg me-3 pulse-btn">
+                            <i class="fas fa-calendar-plus me-2"></i>Book Now
+                        </a>
+                        <a href="tel:{{ settings.contact_phone or '+919876543210' }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-phone me-2"></i>Call Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image text-center">
+                    <div class="floating-card">
+                        <div class="ac-unit">
+                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Green Breeze Logo" class="rotating" style="height: 80px; width: auto; margin-bottom: 1rem;">
+                            <h4 class="text-primary">Complete Solutions</h4>
+                            <p class="text-muted">AC • Fridge • Washing Machine</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll-indicator">
+        <a href="#features" class="scroll-down">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </div>
+</section>
+
+{% if offers %}
+<section class="py-5 offers-section bg-gradient-warning">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-danger mb-2 pulse-badge">🔥 LIMITED TIME OFFERS 🔥</span>
+            <h2 class="display-4 fw-bold mb-3 text-white">MEGA DEALS</h2>
+            <p class="lead text-white">Grab these amazing discounts before they expire!</p>
+        </div>
+        <div class="row g-4">
+            {% for offer in offers %}
+            <div class="col-lg-6">
+                <div class="offer-card-enhanced">
+                    <div class="offer-glow"></div>
+                    <div class="offer-badge-enhanced">
+                        <div class="discount-circle">
+                            <span class="discount-percent">{{ offer[3] }}%</span>
+                            <span class="off-text">OFF</span>
+                        </div>
+                    </div>
+                    <div class="offer-content-enhanced">
+                        <h3 class="offer-title-enhanced">{{ offer[1] }}</h3>
+                        <p class="offer-description-enhanced">{{ offer[2] }}</p>
+                        <div class="offer-validity-enhanced">
+                            <i class="fas fa-hourglass-half text-danger me-2"></i>
+                            <span class="validity-text">Expires: {{ offer[4] }}</span>
+                        </div>
+                        <a href="{{ url_for('book_service') }}" class="btn-claim-offer">
+                            <i class="fas fa-gift me-2"></i>CLAIM NOW
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd700 100%);
+}
+
+.pulse-badge {
+    animation: pulse 2s infinite;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 8px 16px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.offer-card-enhanced {
+    position: relative;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+}
+
+.offer-card-enhanced:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    border-color: #ffd700;
+}
+
+.offer-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+    animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.offer-badge-enhanced {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    z-index: 10;
+}
+
+.discount-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #ff4757, #ff3838);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 8px 20px rgba(255,71,87,0.4);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+.discount-percent {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.off-text {
+    font-size: 0.7rem;
+    margin-top: -2px;
+}
+
+.offer-content-enhanced {
+    position: relative;
+    z-index: 5;
+}
+
+.offer-title-enhanced {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+.offer-description-enhanced {
+    color: #5a6c7d;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.offer-validity-enhanced {
+    background: linear-gradient(90deg, #ffe5e5, #fff5f5);
+    padding: 10px 15px;
+    border-radius: 25px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #ff4757;
+}
+
+.validity-text {
+    font-weight: 600;
+    color: #e74c3c;
+}
+
+.btn-claim-offer {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-claim-offer:hover {
+    background: linear-gradient(45deg, #218838, #1e7e34);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40,167,69,0.4);
+    color: white;
+    text-decoration: none;
+}
+</style>
+{% endif %}
+
+<!-- Features Section -->
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary mb-2">Why Choose Us</span>
+            <h2 class="display-5 fw-bold mb-3">Professional Home Appliance Services</h2>
+            <p class="lead text-muted">Expert services for all your home appliances</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100 text-center p-4">
+                    <div class="feature-icon mb-4">
+                        <div class="icon-circle bg-primary">
+                            <i class="fas fa-user-tie fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">Expert Technicians</h4>
+                    <p class="text-muted mb-4">Certified professionals with 10+ years experience</p>
+                    <div class="feature-list">
+                        <small class="text-success"><i class="fas fa-check me-1"></i> Licensed & Insured</small><br>
+                        <small class="text-success"><i class="fas fa-check me-1"></i> Background Verified</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100 text-center p-4">
+                    <div class="feature-icon mb-4">
+                        <div class="icon-circle bg-success">
+                            <i class="fas fa-bolt fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">Quick Response</h4>
+                    <p class="text-muted mb-4">Same-day service available with 2-hour response time</p>
+                    <div class="feature-list">
+                        <small class="text-success"><i class="fas fa-check me-1"></i> 24/7 Emergency Service</small><br>
+                        <small class="text-success"><i class="fas fa-check me-1"></i> Online Booking</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100 text-center p-4">
+                    <div class="feature-icon mb-4">
+                        <div class="icon-circle bg-warning">
+                            <i class="fas fa-shield-alt fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">100% Guarantee</h4>
+                    <p class="text-muted mb-4">All services backed by comprehensive warranty</p>
+                    <div class="feature-list">
+                        <small class="text-success"><i class="fas fa-check me-1"></i> 1 Year Warranty</small><br>
+                        <small class="text-success"><i class="fas fa-check me-1"></i> Money Back Guarantee</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary mb-2">Our Services</span>
+            <h2 class="display-5 fw-bold mb-3">Complete Home Appliance Solutions</h2>
+            <p class="lead text-muted">Professional services for all your appliance needs</p>
+        </div>
+
+        <!-- Service Categories -->
+        {% for category, services in services_by_category.items() %}
+        <div class="service-category mb-5">
+            <div class="category-header text-center mb-4">
+                <div class="category-icon mb-3">
+                    {% if category == 'AC' %}
+                        <i class="fas fa-snowflake fa-3x text-primary"></i>
+                    {% elif category == 'Fridge' %}
+                        <i class="fas fa-temperature-low fa-3x text-info"></i>
+                    {% elif category == 'Washing Machine' %}
+                        <i class="fas fa-tshirt fa-3x text-success"></i>
+                    {% endif %}
+                </div>
+                <h3 class="category-title">{{ category }} Services</h3>
+                <p class="text-muted">Professional {{ category.lower() }} solutions</p>
+            </div>
+            
+            <div class="row g-4">
+                {% for service in services %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card h-100">
+                        <div class="service-image">
+                            {% if service[7] %}
+                                <img src="{{ url_for('static', filename='images/services/' + service[7]) }}" alt="{{ service[1] }}" class="service-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="service-icon-fallback" style="display: none;">
+                                    {% if 'AC' in service[1] %}
+                                        <i class="fas fa-snowflake"></i>
+                                    {% elif 'Fridge' in service[1] %}
+                                        <i class="fas fa-temperature-low"></i>
+                                    {% elif 'Washing' in service[1] %}
+                                        <i class="fas fa-tshirt"></i>
+                                    {% else %}
+                                        <i class="fas fa-tools"></i>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="service-icon-fallback">
+                                    {% if 'AC' in service[1] %}
+                                        <i class="fas fa-snowflake"></i>
+                                    {% elif 'Fridge' in service[1] %}
+                                        <i class="fas fa-temperature-low"></i>
+                                    {% elif 'Washing' in service[1] %}
+                                        <i class="fas fa-tshirt"></i>
+                                    {% else %}
+                                        <i class="fas fa-tools"></i>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title">{{ service[1] }}</h4>
+                            <p class="service-description">{{ service[2] }}</p>
+                            <div class="service-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-clock text-primary"></i>
+                                    <span>{{ service[4] }}</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-shield-alt text-success"></i>
+                                    <span>Warranty Included</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-phone text-warning"></i>
+                                    <span>Call for Price</span>
+                                </div>
+                            </div>
+                            {% if show_prices %}
+                            <div class="service-price">
+                                <span class="price">₹{{ service[3] }}</span>
+                                <span class="price-label">Starting from</span>
+                            </div>
+                            {% endif %}
+                            <a href="{{ url_for('book_service') }}" class="btn btn-primary service-btn">
+                                <i class="fas fa-calendar-plus me-2"></i>Book Service
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary mb-2">Testimonials</span>
+            <h2 class="display-5 fw-bold mb-3">What Our Customers Say</h2>
+            <p class="lead text-muted">Don't just take our word for it</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="testimonial-card">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="testimonial-text">"Excellent AC service! They fixed my AC in no time and the pricing was very reasonable. Highly recommended!"</p>
+                    <div class="testimonial-author">
+                        <strong>Rajesh Kumar</strong>
+                        <small class="text-muted">Bellary</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="testimonial-card">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="testimonial-text">"My fridge was not cooling properly. Their technician diagnosed and fixed it quickly. Great service!"</p>
+                    <div class="testimonial-author">
+                        <strong>Priya Sharma</strong>
+                        <small class="text-muted">Hospet</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="testimonial-card">
+                    <div class="stars mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="testimonial-text">"Washing machine repair was done professionally. Clean work, fair pricing, and excellent customer service."</p>
+                    <div class="testimonial-author">
+                        <strong>Amit Patel</strong>
+                        <small class="text-muted">Bellary</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-5 contact-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="contact-content">
+                    <span class="badge bg-warning mb-3">Get In Touch</span>
+                    <h2 class="display-5 fw-bold mb-4 text-white">Ready for Professional Service?</h2>
+                    <p class="lead mb-4 text-light">Book your appliance service today and experience the Green Breeze difference!</p>
+                    <div class="contact-info mb-4">
+                        <div class="contact-item">
+                            <i class="fas fa-phone text-warning"></i>
+                            <div>
+                                <strong class="text-white">Call Us</strong>
+                                <p class="text-light mb-0">{{ settings.contact_phone or '+91 9876543210' }}</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope text-warning"></i>
+                            <div>
+                                <strong class="text-white">Email Us</strong>
+                                <p class="text-light mb-0">{{ settings.contact_email or 'info@greenbreeze.com' }}</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt text-warning"></i>
+                            <div>
+                                <strong class="text-white">Visit Us</strong>
+                                <p class="text-light mb-0">{{ settings.address or '123 Service Street, Your City' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="contact-actions">
+                    <div class="action-card">
+                        <h4 class="text-center mb-4">Book Your Service</h4>
+                        <div class="d-grid gap-3">
+                            <a href="{{ url_for('book_service') }}" class="btn btn-warning btn-lg">
+                                <i class="fas fa-calendar-plus me-2"></i>Book Online
+                            </a>
+                            <a href="tel:{{ settings.contact_phone or '+919876543210' }}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-phone me-2"></i>Call Now
+                            </a>
+                            <a href="https://wa.me/{{ (settings.contact_phone or '+919876543210').replace('+', '').replace(' ', '') }}" class="btn btn-success btn-lg">
+                                <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                            </a>
+                        </div>
+                        <div class="text-center mt-3">
+                            <small class="text-muted">Available 24/7 for emergency services</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trust Indicators -->
+<section class="py-4 bg-primary">
+    <div class="container">
+        <div class="row text-center text-white">
+            <div class="col-6 col-md-3 mb-3">
+                <div class="trust-item">
+                    <i class="fas fa-users fa-2x mb-2"></i>
+                    <h4 class="mb-0">500+</h4>
+                    <small>Happy Customers</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="trust-item">
+                    <i class="fas fa-clock fa-2x mb-2"></i>
+                    <h4 class="mb-0">24/7</h4>
+                    <small>Support Available</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="trust-item">
+                    <i class="fas fa-star fa-2x mb-2"></i>
+                    <h4 class="mb-0">4.9</h4>
+                    <small>Average Rating</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="trust-item">
+                    <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                    <h4 class="mb-0">100%</h4>
+                    <small>Satisfaction</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.service-category {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 3rem;
+}
+
+.service-category:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.category-header {
+    margin-bottom: 2rem;
+}
+
+.category-icon {
+    padding: 1rem;
+}
+
+.category-title {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.offers-ticker {
+    background: linear-gradient(90deg, #ff4757, #ff6b35, #ffd700, #ff6b35, #ff4757);
+    background-size: 200% 100%;
+    animation: gradient 3s ease infinite;
+    color: white;
+    padding: 20px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.ticker-content {
+    display: inline-block;
+    animation: scroll 20s linear infinite;
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+@keyframes scroll {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.ticker-item {
+    margin-right: 100px;
+}
+</style>
+{% endblock %}

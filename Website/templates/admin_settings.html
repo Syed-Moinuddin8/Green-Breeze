@@ -1,0 +1,241 @@
+{% extends "admin_base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Website Settings</h2>
+    <button class="btn btn-success" onclick="saveAllSettings()">
+        <i class="fas fa-save me-1"></i>Save All Changes
+    </button>
+</div>
+
+<div class="row">
+    <!-- General Settings -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-cog me-2"></i>General Settings</h5>
+            </div>
+            <div class="card-body">
+                <form id="generalSettings">
+                    {% for setting in settings %}
+                        {% if setting[1] in ['site_title', 'site_description'] %}
+                        <div class="mb-3">
+                            <label for="{{ setting[1] }}" class="form-label">
+                                {{ setting[1].replace('_', ' ').title() }}
+                            </label>
+                            {% if setting[1] == 'site_description' %}
+                            <textarea class="form-control" id="{{ setting[1] }}" name="{{ setting[1] }}" rows="3">{{ setting[2] }}</textarea>
+                            {% else %}
+                            <input type="text" class="form-control" id="{{ setting[1] }}" name="{{ setting[1] }}" value="{{ setting[2] }}">
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact Information -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-address-book me-2"></i>Contact Information</h5>
+            </div>
+            <div class="card-body">
+                <form id="contactSettings">
+                    {% for setting in settings %}
+                        {% if setting[1] in ['contact_phone', 'contact_email', 'address'] %}
+                        <div class="mb-3">
+                            <label for="{{ setting[1] }}" class="form-label">
+                                {{ setting[1].replace('_', ' ').replace('contact ', '').title() }}
+                            </label>
+                            {% if setting[1] == 'address' %}
+                            <textarea class="form-control" id="{{ setting[1] }}" name="{{ setting[1] }}" rows="3">{{ setting[2] }}</textarea>
+                            {% else %}
+                            <input type="{{ 'tel' if 'phone' in setting[1] else 'email' if 'email' in setting[1] else 'text' }}" 
+                                   class="form-control" id="{{ setting[1] }}" name="{{ setting[1] }}" value="{{ setting[2] }}">
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Business Hours -->
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Business Hours</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Working Days</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="monday" checked>
+                                <label class="form-check-label" for="monday">Monday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="tuesday" checked>
+                                <label class="form-check-label" for="tuesday">Tuesday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="wednesday" checked>
+                                <label class="form-check-label" for="wednesday">Wednesday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="thursday" checked>
+                                <label class="form-check-label" for="thursday">Thursday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="friday" checked>
+                                <label class="form-check-label" for="friday">Friday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="saturday" checked>
+                                <label class="form-check-label" for="saturday">Saturday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="sunday">
+                                <label class="form-check-label" for="sunday">Sunday</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="openTime" class="form-label">Opening Time</label>
+                            <input type="time" class="form-control" id="openTime" value="09:00">
+                        </div>
+                        <div class="mb-3">
+                            <label for="closeTime" class="form-label">Closing Time</label>
+                            <input type="time" class="form-control" id="closeTime" value="18:00">
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="showPrices" name="show_prices" {% for setting in settings %}{% if setting[1] == 'show_prices' and setting[2] == '1' %}checked{% endif %}{% endfor %}>
+                                <label class="form-check-label" for="showPrices">
+                                    Display Prices on Website
+                                </label>
+                            </div>
+                            <small class="text-muted">Toggle to show or hide service prices on the website</small>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            These hours will be displayed on your website and used for booking availability.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Website Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Total Services</span>
+                    <span class="badge bg-primary">{{ total_services }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Active Offers</span>
+                    <span class="badge bg-success">{{ active_offers }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>This Month Bookings</span>
+                    <span class="badge bg-info">{{ monthly_bookings }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Website Status</span>
+                    <span class="badge bg-success">Online</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary btn-sm" onclick="previewWebsite()">
+                        <i class="fas fa-eye me-1"></i>Preview Website
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="backupData()">
+                        <i class="fas fa-download me-1"></i>Backup Data
+                    </button>
+                    <button class="btn btn-outline-warning btn-sm" onclick="clearCache()">
+                        <i class="fas fa-broom me-1"></i>Clear Cache
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function saveAllSettings() {
+    const generalForm = document.getElementById('generalSettings');
+    const contactForm = document.getElementById('contactSettings');
+    
+    const generalData = new FormData(generalForm);
+    const contactData = new FormData(contactForm);
+    
+    const allSettings = {};
+    
+    // Combine all form data
+    for (let [key, value] of generalData.entries()) {
+        allSettings[key] = value;
+    }
+    for (let [key, value] of contactData.entries()) {
+        allSettings[key] = value;
+    }
+    
+    // Handle checkbox
+    allSettings['show_prices'] = document.getElementById('showPrices').checked;
+    
+    fetch('/api/update_settings', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(allSettings)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert('Settings saved successfully');
+        } else {
+            alert('Error saving settings');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving settings');
+    });
+}
+
+function previewWebsite() {
+    window.open('{{ url_for("index") }}', '_blank');
+}
+
+function backupData() {
+    window.location.href = '/api/backup_data';
+}
+
+function clearCache() {
+    if (confirm('Are you sure you want to clear the cache?')) {
+        alert('Cache cleared successfully');
+    }
+}
+</script>
+{% endblock %}

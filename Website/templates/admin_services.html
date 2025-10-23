@@ -1,0 +1,226 @@
+{% extends "admin_base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Services Management</h2>
+    <button class="btn btn-primary" onclick="openServiceModal()">
+        <i class="fas fa-plus me-1"></i>Add New Service
+    </button>
+</div>
+
+<!-- Services Table -->
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">All Services</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Service Name</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service in services %}
+                    <tr id="service-{{ service[0] }}">
+                        <td><strong>#{{ service[0] }}</strong></td>
+                        <td>
+                            {% if service[7] %}
+                                <img src="{{ url_for('static', filename='images/services/' + service[7]) }}" alt="{{ service[1] }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                            {% else %}
+                                <div style="width: 50px; height: 50px; background: #f8f9fa; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ service[1] }}</td>
+                        <td><span class="badge bg-info">{{ service[5] if service|length > 5 else 'AC' }}</span></td>
+                        <td>{{ service[2][:50] }}{% if service[2]|length > 50 %}...{% endif %}</td>
+                        <td><strong>₹{{ service[3] }}</strong></td>
+                        <td>{{ service[4] }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if service[6] else 'secondary' }}">
+                                {{ 'Active' if service[6] else 'Inactive' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="editService({{ service[0] }}, '{{ service[1] }}', '{{ service[2] }}', {{ service[3] }}, '{{ service[4] }}', '{{ service[5] if service|length > 5 else 'AC' }}', '{{ service[7] or '' }}')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-{{ 'secondary' if service[6] else 'success' }}" onclick="toggleService({{ service[0] }})" title="{{ 'Deactivate' if service[6] else 'Activate' }}">
+                                    <i class="fas fa-{{ 'eye-slash' if service[6] else 'eye' }}"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Service Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">Add New Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm" enctype="multipart/form-data">
+                    <input type="hidden" id="serviceId" name="id">
+                    
+                    <div class="mb-3">
+                        <label for="serviceName" class="form-label">Service Name *</label>
+                        <input type="text" class="form-control" id="serviceName" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="serviceDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="serviceDescription" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="serviceCategory" class="form-label">Category *</label>
+                        <select class="form-select" id="serviceCategory" name="category" required>
+                            <option value="">Select category...</option>
+                            <option value="AC">AC</option>
+                            <option value="Fridge">Fridge</option>
+                            <option value="Washing Machine">Washing Machine</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="serviceImage" class="form-label">Service Image *</label>
+                        <input type="file" class="form-control" id="serviceImage" name="image" accept="image/*" required>
+                        <div class="form-text">Upload an image for this service (PNG, JPG, JPEG, GIF)</div>
+                        <div id="currentImage" style="display: none; margin-top: 10px;">
+                            <small class="text-muted">Current image:</small><br>
+                            <img id="currentImagePreview" src="" alt="Current image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 5px; margin-top: 5px;">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="servicePrice" class="form-label">Price (₹) *</label>
+                            <input type="number" class="form-control" id="servicePrice" name="price" step="0.01" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="serviceDuration" class="form-label">Duration</label>
+                            <input type="text" class="form-control" id="serviceDuration" name="duration" placeholder="e.g., 1-2 hours">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveService()">Save Service</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openServiceModal() {
+    document.getElementById('serviceModalTitle').textContent = 'Add New Service';
+    document.getElementById('serviceForm').reset();
+    document.getElementById('serviceId').value = '';
+    document.getElementById('currentImage').style.display = 'none';
+    document.getElementById('serviceImage').required = true;
+    new bootstrap.Modal(document.getElementById('serviceModal')).show();
+}
+
+function editService(id, name, description, price, duration, category, image) {
+    document.getElementById('serviceModalTitle').textContent = 'Edit Service';
+    document.getElementById('serviceId').value = id;
+    document.getElementById('serviceName').value = name;
+    document.getElementById('serviceDescription').value = description;
+    document.getElementById('servicePrice').value = price;
+    document.getElementById('serviceDuration').value = duration;
+    document.getElementById('serviceCategory').value = category || 'AC';
+    
+    // Handle current image display
+    if (image) {
+        document.getElementById('currentImage').style.display = 'block';
+        document.getElementById('currentImagePreview').src = '/static/images/services/' + image;
+        document.getElementById('serviceImage').required = false;
+    } else {
+        document.getElementById('currentImage').style.display = 'none';
+        document.getElementById('serviceImage').required = true;
+    }
+    
+    new bootstrap.Modal(document.getElementById('serviceModal')).show();
+}
+
+function saveService() {
+    const form = document.getElementById('serviceForm');
+    const formData = new FormData(form);
+    
+    // Check if image is required (for new services or services without current image)
+    const isEdit = formData.get('id');
+    const hasCurrentImage = document.getElementById('currentImage').style.display !== 'none';
+    const hasNewImage = formData.get('image').name !== '';
+    
+    if (!isEdit && !hasNewImage) {
+        alert('Please select an image for the service');
+        return;
+    }
+    
+    if (isEdit && !hasCurrentImage && !hasNewImage) {
+        alert('Please select an image for the service');
+        return;
+    }
+    
+    fetch('/api/update_service', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert('Service saved successfully');
+            location.reload();
+        } else {
+            alert('Error saving service');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving service');
+    });
+}
+
+function toggleService(serviceId) {
+    fetch(`/api/toggle_service/${serviceId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            location.reload();
+        } else {
+            alert('Error toggling service status');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error toggling service status');
+    });
+}
+</script>
+{% endblock %}
